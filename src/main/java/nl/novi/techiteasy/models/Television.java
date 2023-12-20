@@ -1,16 +1,15 @@
 package nl.novi.techiteasy.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-
-import java.util.Date;
+import jakarta.persistence.*;
+import java.util.Collection;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 public class Television {
     @Id
     @GeneratedValue
-    private Long id;
+    Long id;
     private String type;
     private String brand;
     private String name;
@@ -26,18 +25,18 @@ public class Television {
     private Boolean bluetooth;
     private Boolean ambiLight;
     private Integer originalStock;
-    private Date sold;
+    private Integer sold;
 
-    public void Television() {
+    @OneToOne
+    RemoteController remoteController;
 
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ci_module_id")
+    private CIModule ciModule;
 
-    public void Television(String typeInput, String brandInput, String nameInput, Double priceInput){
-        this.type = typeInput;
-        this.brand = brandInput;
-        this.name = nameInput;
-        this.price = priceInput;
-    }
+    @OneToMany(mappedBy = "television")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    Collection<TelevisionWallBracket> televisionWallBrackets;
 
     public void setId(Long id) {
         this.id = id;
@@ -167,11 +166,35 @@ public class Television {
         this.originalStock = originalStock;
     }
 
-    public Date getSold() {
+    public Integer getSold() {
         return sold;
     }
 
-    public void setSold(Date sold) {
+    public void setSold(Integer sold) {
         this.sold = sold;
+    }
+
+    public RemoteController getRemoteController() {
+        return remoteController;
+    }
+
+    public void setRemoteController(RemoteController remoteController) {
+        this.remoteController = remoteController;
+    }
+
+    public CIModule getCiModule() {
+        return ciModule;
+    }
+
+    public void setCiModule(CIModule ciModule) {
+        this.ciModule = ciModule;
+    }
+
+    public Collection<TelevisionWallBracket> getTelevisionWallBrackets() {
+        return televisionWallBrackets;
+    }
+
+    public void setTelevisionWallBrackets(Collection<TelevisionWallBracket> televisionWallBrackets) {
+        this.televisionWallBrackets = televisionWallBrackets;
     }
 }
